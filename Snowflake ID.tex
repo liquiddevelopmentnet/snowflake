@@ -58,18 +58,30 @@
 \section{Introduction}
 The `Snowflake' concept was originally invented by
 \href{https://twitter.com}{Twitter} and is designed to generate short and
-guaranteed unique ID\footnote{Short for \textbf{Identifier},  is a name that
-    identifies (that is, labels the identity of) either a unique object or a
+guaranteed unique ID\footnote{Short for \textbf{Identifier},  is a name
+    that
+    identifies (that is, labels the identity of) either a unique object or
+    a
     unique
     class of objects, where the `object' or class may be an idea, physical
-    countable object (or class thereof), or physical non-countable substance
+    countable object (or class thereof), or physical non-countable
+    substance
     (or
     class thereof).} numbers at high scale.
 
 \subsection{Motivation}
 Twitter invented the Snowflake concept because they were moving away from
-\href{https://en.wikipedia.org/wiki/MySQL}{MySQL} (Database) and moved to
-\href{https://en.wikipedia.org/wiki/Cassandra}{Cassandra} because of scaling
+\href{https://en.wikipedia.org/wiki/MySQL}{MySQL}\footnote{MySQL is an
+    open-source relational database management system. Its name is a
+    combination of
+    `My', the name of co-founder Michael Widenius's daughter My, and `SQL', the
+    acronym for Structured Query Language.} and moved to
+\href{https://en.wikipedia.org/wiki/Cassandra}{Cassandra}\footnote{Apache
+    Cassandra is
+    a free and open-source, distributed, wide-column store, NoSQL database
+    management system designed to handle large amounts of data across many
+    commodity servers, providing high availability with no single point of
+    failure.} because of scaling
 reasons, so they needed a new way to generate unique ID's based on the fact
 that Cassandra does and should not provide a sequential id generation facility.
 
@@ -99,7 +111,8 @@ implementation they mostly are handled as strings to prevent integer overflows
 in some languages. \\
 \hn{}
 Being a 64-bit integer makes the Snowflake ID's practical maximum
-$2^{64}$ or $($FFFFFFFFFFFFFFFF$)_{16}$.
+$2^{64} - 1$ (or $($FFFFFFFFFFFFFFFF$)_{16}$),
+(see \nameref{snowflake_id_constraints}).
 
 \section{Binary Breakdown}
 A Snowflake ID is constructed by chaining binary data and then converting to
@@ -400,6 +413,42 @@ After all, those approaches only delay the problem, so its always good to have
 it back in mind.
 
 \section{Constraints}
-\section{References}
+
+\subsection{Timestamp}
+The timestamp is a 42-bit integer, which means that it can hold a value from
+\code{0} to \code{4398046511103} (or $2^{42} - 1$).
+
+\subsection{Worker ID and Process ID}
+The worker ID and process ID are both 5-bit integers, which means that they
+can hold a value from \code{0} to \code{31}. \\
+\hn{}
+The worker ID is used to identify the machine that generated the ID, while the
+process ID is used to identify the process or thread that generated the ID.\@
+
+\subsection{Increment}
+The increment is a 12-bit integer, which means that it can hold a value from
+\code{0} to \code{4095}.
+
+\subsection{Snowflake ID}
+\label{snowflake_id_constraints}
+The Snowflake ID is a 64-bit integer, which means that it can hold a value from
+\code{0} to \code{18446744073709551615} (or $2^{64} - 1$).
+
+\section{Sources}
+\begin{small}
+    \begin{itemize}
+        \item \url{https://en.wikipedia.org/wiki/Identifier}
+        \item \url{https://en.wikipedia.org/wiki/MySQL}
+        \item \url{https://en.wikipedia.org/wiki/Apache_Cassandra}
+        \item \url{https://en.wikipedia.org/wiki/Discord}
+        \item \url{https://en.wikipedia.org/wiki/Network_Time_Protocol}
+        \item \url{https://en.wikipedia.org/wiki/Unix_time}
+        \item \url{https://en.wikipedia.org/wiki/2038_problem}
+        \item \url{https://discord.com/developers/docs/reference#snowflakes}
+        \item
+
+              \url{https://github.com/twitter-archive/snowflake/tree/snowflake-2010#readme}
+    \end{itemize}
+\end{small}
 
 \end{document}
