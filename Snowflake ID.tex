@@ -16,8 +16,8 @@
 \usepackage{newverbs}
 
 \addto\captionsenglish{
-    \renewcommand{\contentsname}%
-    {Table of Contents}%
+	\renewcommand{\contentsname}%
+	{Table of Contents}%
 }
 
 \newcommand{\code}[1]{\colorbox{cverbbg}{\texttt{#1}}}
@@ -28,27 +28,28 @@
 \newenvironment{lcverbatim}
 {\SaveVerbatim{cverb}}
 {\endSaveVerbatim{}
-    \flushleft\fboxrule=0pt\fboxsep=.5em
-    \colorbox{cverbbg}{%
+	\flushleft\fboxrule=0pt\fboxsep=.5em
+	\colorbox{cverbbg}{%
 
-        \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
-    }
-    \endflushleft{}
+		\makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+	}
+	\endflushleft{}
 }
 
-\title{\textbf{Snowflake ID}}
+\title{\textbf{Snowflake Id}}
 \author{Finn Behrend}
 
 \begin{document}
 \begin{titlingpage}
-    \maketitle
-    \begin{center}
-        \vspace{50px}
-        Complete sheet and specification about Twitter's Snowflake concept
-        \vfill
-        \footnotesize{Copyright \copyright{} 2023 --- Finn Behrend
-            (https://github.com/liquiddevelopmentnet)}
-    \end{center}
+	\maketitle
+	\begin{center}
+		\vspace{50px}
+		Complete sheet and specification about Twitter's Snowflake Id
+		concept
+		\vfill
+		\footnotesize{Copyright \copyright{} 2023 --- Finn Behrend
+			(https://github.com/liquiddevelopmentnet)}
+	\end{center}
 \end{titlingpage}
 
 \tableofcontents
@@ -58,312 +59,335 @@
 \section{Introduction}
 The `Snowflake' concept was originally invented by
 \href{https://twitter.com}{Twitter} and is designed to generate short and
-guaranteed unique ID\footnote{Short for \textbf{Identifier},  is a name
-    that
-    identifies (that is, labels the identity of) either a unique object or
-    a
-    unique
-    class of objects, where the `object' or class may be an idea, physical
-    countable object (or class thereof), or physical non-countable
-    substance
-    (or
-    class thereof).} numbers at high scale.
+guaranteed unique Id\footnote{Short for \textbf{Identifier},  is a name
+	that
+	identifies (that is, labels the identity of) either a unique object or
+	a
+	unique
+	class of objects, where the `object' or class may be an idea, physical
+	countable object (or class thereof), or physical non-countable
+	substance
+	(or
+	class thereof).} numbers at high scale.
 
 \subsection{Motivation}
 Twitter invented the Snowflake concept because they were moving away from
 \href{https://en.wikipedia.org/wiki/MySQL}{MySQL}\footnote{MySQL is an
-    open-source relational database management system. Its name is a
-    combination of
-    `My', the name of co-founder Michael Widenius's daughter My, and `SQL', the
-    acronym for Structured Query Language.} and moved to
+	open-source relational database management system. Its name is a
+	combination of
+	`My', the name of co-founder Michael Widenius's daughter My, and `SQL',
+	the
+	acronym for Structured Query Language.} and moved to
 \href{https://en.wikipedia.org/wiki/Cassandra}{Cassandra}\footnote{Apache
-    Cassandra is
-    a free and open-source, distributed, wide-column store, NoSQL database
-    management system designed to handle large amounts of data across many
-    commodity servers, providing high availability with no single point of
-    failure.} because of scaling
-reasons, so they needed a new way to generate unique ID's based on the fact
-that Cassandra does and should not provide a sequential id generation facility.
+	Cassandra is
+	a free and open-source, distributed, wide-column store, NoSQL database
+	management system designed to handle large amounts of data across many
+	commodity servers, providing high availability with no single point of
+	failure.} because of scaling
+reasons, so they needed a new way to generate unique Id's based on the fact
+that Cassandra does and should not provide a sequential Id generation facility.
 
 \section{Capacity}
-Snowflakes are designed to withstand the following specifications with ease:
+A Snowflake Infrastructure is designed to withstand the following specifications with ease:
 \begin{itemize}
-    \item 10k ID generations per second per process
-    \item Response rate of 2ms
+	\item 10k Id generations per second per process
+	\item Response rate of 2ms
 \end{itemize}
-In large data centers, machines generating ID's should not have to coordinate
+In large data centers, machines generating Id's should not have to coordinate
 with each other. That's what makes Snowflakes Concept so brilliant as computers
-do not have to communicate with each other during or after the id creation
+do not have to communicate with each other during or after the Id creation
 process.
 
 \section{Scheme}
-Example of a Snowflake ID from
+Example of a Snowflake Id from
 \href{https://discord.com/}{Discord}\footnote{Discord is a VoIP and instant
-    messaging social platform. Users have the ability to communicate with voice
-    calls, video calls, text messaging, media and files in private chats or as
-    part
-    of communities called `servers'.} we'll use throughout the sheet:
+	messaging social platform. Users have the ability to communicate with
+	voice
+	calls, video calls, text messaging, media and files in private chats or
+	as
+	part
+	of communities called `servers'.} we'll use throughout the sheet:
 \code{555780371086704681} \\
 \hn{}
-A Snowflake ID consists of a 64-bit number (e.g.\ a \code{uint64}), depending
+A Snowflake Id consists of a 64-bit number (e.g.\ a \code{uint64}), depending
 on
 implementation they mostly are handled as strings to prevent integer overflows
 in some languages. \\
 \hn{}
-Being a 64-bit integer makes the Snowflake ID's practical maximum
+Being a 64-bit integer makes the Snowflake Id's practical maximum
 $2^{64} - 1$ (or $($FFFFFFFFFFFFFFFF$)_{16}$),
 (see \nameref{snowflake_id_constraints}).
 
 \section{Binary Breakdown}
-A Snowflake ID is constructed by chaining binary data and then converting to
+A Snowflake Id is constructed by chaining binary data and then converting to
 decimal. \\
 
 \begin{figure}[H]
-    \large{\texttt{\color{cyan}000001111011011010000111010011011000011111
-            \color{red}00001 \color{green}00000 \color{gray}000000101001}}
-    \\
-    \caption{Binary Breakdown of the example ID}\label{fig:breakdown_example}
+	\large{\texttt{\color{cyan}000001111011011010000111010011011000011111
+			\color{red}00001 \color{green}00000
+			\color{gray}000000101001}}
+	\\
+	\caption{Binary Breakdown of the example
+		Id}\label{fig:breakdown_example}
 \end{figure}
 
 \begin{table}[h]
-    \begin{tabular}{l|c|l}
-        Field                & Bits           & Description
-        \\ \hline
-        Timestamp            & \color{cyan}42 & Millisenconds since the
-        standard UNIX Epoch
-        \\ \hline
-        Internal worker ID   & \color{red}5   & Usually incremented ID of the
-        worker
-        \\ \hline
-        Internal process ID  & \color{green}5 & Usually incremented ID of the
-        process in
-        the worker
-        \\ \hline
-        Increment / Sequence & \color{gray}12 & For every ID generated on
-        process, this number is incremented
-    \end{tabular}
+	\begin{tabular}{l|c|l}
+		Field                & Bits           & Description
+		\\ \hline
+		Timestamp            & \color{cyan}42 & Millisenconds since the
+		standard UNIX Epoch
+		\\ \hline
+		Internal worker Id   & \color{red}5   & Usually incremented Id
+		of the
+		worker
+		\\ \hline
+		Internal process Id  & \color{green}5 & Usually incremented Id
+		of the
+		process in
+		the worker
+		\\ \hline
+		Increment / Sequence & \color{gray}12 & For every Id generated
+		on
+		process, this number is incremented
+	\end{tabular}
 \end{table}
 
 \pagebreak
 
-\section{Retrieving data from a Snowflake ID}
+\section{Retrieving data from a Snowflake Id}
 
 \subsection{Timestamp Field}
 The timestamp field is the first field and has \code{42} bits in total. It
 contains the UNIX Timestamp\footnote{Unix time is a date and time
-    representation widely used in computing. It measures time by the number of
-    seconds or milliseconds that have elapsed since \texttt{00:00:00 UTC on 1
-        January 1970}, the beginning of the Unix epoch, less adjustments made
-    due to
-    leap seconds.} when the Snowflake ID was generated. Implementations like to
+	representation widely used in computing. It measures time by the number
+	of
+	seconds or milliseconds that have elapsed since \texttt{00:00:00 UTC on
+		1
+		January 1970}, the beginning of the Unix epoch, less
+	adjustments made
+	due to
+	leap seconds.} when the Snowflake Id was generated. Implementations
+like to
 use
 custom epochs to lower the timestamp at the beginning of use, and postpone the
-`Year-3038' problem. Usually the first day of January in a Year is taken.
+`Year-3038' problem. Usually the first day of January in a Year is taken, (see \nameref{year_3038_problem}).
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        long snowflake = 555780371086704681;
-        long customEpoch = 1420070400000;
-        // As corresponding example for the Snowflake ID,
-        // Discord's custom Epoch is used
+	\begin{lcverbatim}
+	long snowflake = 555780371086704681;
+	long customEpoch = 1420070400000;
+	// As corresponding example for the Snowflake Id,
+	// Discord's custom Epoch is used
 
-        long timestamp = (snowflake >> 22) + customEpoch;
-    \end{lcverbatim}
-    \caption{Example of timestamp retrieval in C with custom
-        epoch}\label{fig:r_timestamp_1}
+	long timestamp = (snowflake >> 22) + customEpoch;
+	\end{lcverbatim}
+	\caption{Example of timestamp retrieval in C with custom
+		epoch}\label{fig:r_timestamp_1}
 \end{figure}
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        long snowflake = 555780371086704681;
-        long timestamp = (snowflake >> 22);
-    \end{lcverbatim}
-    \caption{Example of timestamp retrieval in C without custom
-        epoch}\label{fig:r_timestamp_2}
+	\begin{lcverbatim}
+	long snowflake = 555780371086704681;
+	long timestamp = (snowflake >> 22);
+	\end{lcverbatim}
+	\caption{Example of timestamp retrieval in C without custom
+		epoch}\label{fig:r_timestamp_2}
 \end{figure}
 
-\subsection{Internal worker-/process ID Fields}
-The `Internal worker ID' and `Internal process ID' fields are the second and
+\subsection{Internal worker-/process Id Fields}
+The `Internal worker Id' and `Internal process Id' fields are the second and
 third fields and both hold 5 bits of data. \\
 \hn{}
 These fields hold simply what their names tell us, the former field holds the
-unique ID of the worker machine that created the Snowflake, and the second
-field holds the unique process ID living in that worker machine, both usually
+unique Id of the worker machine that created the Snowflake, and the second
+field holds the unique process Id living in that worker machine, both usually
 incremented. \\
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        long snowflake = 555780371086704681;
-        int workerId = (snowflake & 0x3E0000) >> 17;
-    \end{lcverbatim}
-    \caption{Example of worker ID retrieval in C}\label{fig:r_worker}
+	\begin{lcverbatim}
+	long snowflake = 555780371086704681;
+	int workerId = (snowflake & 0x3E0000) >> 17;
+	\end{lcverbatim}
+	\caption{Example of worker Id retrieval in C}\label{fig:r_worker}
 \end{figure}
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        long snowflake = 555780371086704681;
-        int processId = (snowflake & 0x1F000) >> 12;
-    \end{lcverbatim}
-    \caption{Example of process ID retrieval in C}\label{fig:r_process}
+	\begin{lcverbatim}
+	long snowflake = 555780371086704681;
+	int processId = (snowflake & 0x1F000) >> 12;
+	\end{lcverbatim}
+	\caption{Example of process Id retrieval in C}\label{fig:r_process}
 \end{figure}
 
 \pagebreak
 
 \subsection{Increment Field}
 The increment field, with consisting of 12 bits is the last chained data in the
-Snowflake ID.\@ It is incremented for every ID that is generated on that
+Snowflake Id.\@ It is incremented for every Id that is generated on that
 process.
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        long snowflake = 555780371086704681;
-        int increment = snowflake & 0xFFF;
-    \end{lcverbatim}
-    \caption{Example of increment retrieval in C}\label{fig:r_inc}
+	\begin{lcverbatim}
+	long snowflake = 555780371086704681;
+	int increment = snowflake & 0xFFF;
+	\end{lcverbatim}
+	\caption{Example of increment retrieval in C}\label{fig:r_inc}
 \end{figure}
 
 \subsection{Complete Implementation Example}
-This is what a proper code retrieving all fields from a Snowflake ID may look
+This is what a proper code retrieving all fields from a Snowflake Id may look
 like: \\
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        long snowflake = 555780371086704681;
-        long customEpoch = 1420070400000;
+	\begin{lcverbatim}
+	long snowflake = 555780371086704681;
+	long customEpoch = 1420070400000;
 
-        long timestamp = (snowflake >> 22) + customEpoch;
-        int workerId = (snowflake & 0x3E0000) >> 17;
-        int processId = (snowflake & 0x1F000) >> 12;
-        int increment = snowflake & 0xFFF;
-    \end{lcverbatim}
-    \caption{Example of proper retrieval implementation with custom epoch in
-        C}\label{fig:r_complete_1}
+	long timestamp = (snowflake >> 22) + customEpoch;
+	int workerId = (snowflake & 0x3E0000) >> 17;
+	int processId = (snowflake & 0x1F000) >> 12;
+	int increment = snowflake & 0xFFF;
+	\end{lcverbatim}
+	\caption{Example of proper retrieval implementation with custom epoch
+		in
+		C}\label{fig:r_complete_1}
 \end{figure}
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        long snowflake = 555780371086704681;
+	\begin{lcverbatim}
+	long snowflake = 555780371086704681;
 
-        long timestamp = (snowflake >> 22);
-        int workerId = (snowflake & 0x3E0000) >> 17;
-        int processId = (snowflake & 0x1F000) >> 12;
-        int increment = snowflake & 0xFFF;
-    \end{lcverbatim}
-    \caption{Example of proper retrieval implementation without custom epoch in
-        C}\label{fig:r_complete2}
+	long timestamp = (snowflake >> 22);
+	int workerId = (snowflake & 0x3E0000) >> 17;
+	int processId = (snowflake & 0x1F000) >> 12;
+	int increment = snowflake & 0xFFF;
+	\end{lcverbatim}
+	\caption{Example of proper retrieval implementation without custom
+		epoch in
+		C}\label{fig:r_complete2}
 \end{figure}
 
 \pagebreak
 
-\section{Generating Snowflake ID's}
+\section{Generating Snowflake Id's}
 
 \begin{figure}[H]
-    \centering
-    \resizebox{1\textwidth}{!}{%
-        \begin{circuitikz}
-            \tikzstyle{every node}=[font=\footnotesize]
-            \draw [ -Stealth] (9.75,10.75) -- (12.25,10.75);
-            \draw  (8.5,10.75) circle (1cm) node {\Large User} ;
-            \draw  (17.5,12.5) rectangle  node {\normalsize Machine 1}
-            (20.75,11.5);
-            \draw  (17.5,11.25) rectangle  node {\normalsize Machine 2}
-            (20.75,10.25);
-            \draw  (17.5,10) rectangle	node {\normalsize Machine 3} (20.75,9);
-            \draw [, dashed] (12.5,10.25) rectangle  node {\normalsize Relay}
-            (14.75,11.25);
-            \draw (16.75,10.75) to[short, -*] (16.75,10.75);
-            \draw [](15,10.75) to[short] (16.75,10.75);
-            \draw [](16.75,10.75) to[short] (16.75,12);
-            \draw [](16.75,10.75) to[short] (16.75,9.5);
-            \draw [ -Stealth] (16.75,12) -- (17.25,12);
-            \draw [ -Stealth] (16.75,10.75) -- (17.25,10.75);
-            \draw [ -Stealth] (16.75,9.5) -- (17.25,9.5);
-        \end{circuitikz}
-    }%
+	\centering
+	\resizebox{1\textwidth}{!}{%
+		\begin{circuitikz}
+			\tikzstyle{every node}=[font=\footnotesize]
+			\draw [ -Stealth] (9.75,10.75) -- (12.25,10.75);
+			\draw  (8.5,10.75) circle (1cm) node {\Large User} ;
+			\draw  (17.5,12.5) rectangle  node {\normalsize Machine
+					1}
+			(20.75,11.5);
+			\draw  (17.5,11.25) rectangle  node {\normalsize
+					Machine 2}
+			(20.75,10.25);
+			\draw  (17.5,10) rectangle	node {\normalsize
+					Machine 3} (20.75,9);
+			\draw [, dashed] (12.5,10.25) rectangle  node
+				{\normalsize Relay}
+			(14.75,11.25);
+			\draw (16.75,10.75) to[short, -*] (16.75,10.75);
+			\draw [](15,10.75) to[short] (16.75,10.75);
+			\draw [](16.75,10.75) to[short] (16.75,12);
+			\draw [](16.75,10.75) to[short] (16.75,9.5);
+			\draw [ -Stealth] (16.75,12) -- (17.25,12);
+			\draw [ -Stealth] (16.75,10.75) -- (17.25,10.75);
+			\draw [ -Stealth] (16.75,9.5) -- (17.25,9.5);
+		\end{circuitikz}
+	}%
 
-    \caption{Example Infrastructure of a ID generating
-        network}\label{fig:ex_infrastructure}
+	\caption{Example Infrastructure of a Id generating
+		network}\label{fig:ex_infrastructure}
 \end{figure}
 
 Assuming we have a infrastructure as shown above, and a user is requesting a
 registration that gets sent to a relay, which then relays the request of one of
-our 3 machines (which generates a ID for that user), and let our ID generating
+our 3 machines (which generates a Id for that user), and let our Id generating
 function look like this:
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        long snowflake(int workerId, int processId) {
-                long timestamp = unix_time();
-                static int increment = -1;
-                increment++;
+	\begin{lcverbatim}
+	long snowflake(int workerId, int processId) {
+		long timestamp = unix_time();
+		static int increment = -1;
+		increment++;
 
-                return (timestamp << 22)
-                | (workerId << 17)
-                | (processId << 12)
-                | increment;
-            }
-    \end{lcverbatim}
-    \caption{Basic Example of a snowflake generating function in
-        C}\label{fig:ex_gen_function}
+		return (timestamp << 22)
+			| (workerId << 17)
+			| (processId << 12)
+			| increment;
+	}
+	\end{lcverbatim}
+	\caption{Basic Example of a snowflake generating function in
+		C}\label{fig:ex_gen_function}
 \end{figure}
 \hn{}
 As you can see, we have two arguments that can be passed into that function, a
 \code{workerId} variable and a \code{processId} variable. Every worker machine
-should have a different worker ID, while every process or thread of that worker
-should have a different process ID (both usually incremented).\\
+should have a different worker Id, while every process or thread of that worker
+should have a different process Id (both usually incremented).\\
 \hn{}
 First, we are getting the current UNIX Timestamp. It is highly recommended to
 use NTP\footnote{The Network Time Protocol (short \textbf{NTP}) is a networking
-    protocol for clock synchronization between computer systems over
-    packet-switched, variable-latency data networks.} to keep your system clock
+	protocol for clock synchronization between computer systems over
+	packet-switched, variable-latency data networks.} to keep your system
+clock
 accurate. \\
 \hn{}
 Now we are defining a static integer to make a consistent incremental for each
 call of the function, and increase it by 1 after initialisation. \\
 \hn{}
 At last, we are shifting the data into the right positions and return the final
-Snowflake ID.\@
+Snowflake Id.\@
 
 \pagebreak
 
 \subsection{Practical Test}
 I've let the first machine generate three snowflakes, two immediately after
-each other and one delayed 2 seconds after the first two ID's.
+each other and one delayed 2 seconds after the first two Id's.
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        7046923580470329344
-        7046923580474523649
-        7046923588863131650
-    \end{lcverbatim}
-    \caption{The three Snowflake ID's that were generated}\label{fig:output_1}
+	\begin{lcverbatim}
+	7046923580470329344
+	7046923580474523649
+	7046923588863131650
+	\end{lcverbatim}
+	\caption{The three Snowflake Id's that were
+		generated}\label{fig:output_1}
 \end{figure}
 \hn{}
 Let's break them down. \\
 
 \begin{figure}[H]
-    \large{\texttt{\color{cyan}11000011100101110110011101010010000010101
-            \color{red}00001 \color{green}00000 \color{gray}000000000000}}
-    \\
-    \caption{Binary Breakdown of the first ID}\label{fig:breakdown_1}
+	\large{\texttt{\color{cyan}11000011100101110110011101010010000010101
+			\color{red}00001 \color{green}00000
+			\color{gray}000000000000}}
+	\\
+	\caption{Binary Breakdown of the first Id}\label{fig:breakdown_1}
 \end{figure}
 
 \begin{figure}[H]
-    \large{\texttt{\color{cyan}11000011100101110110011101010010000010110
-            \color{red}00001 \color{green}00000 \color{gray}000000000001}}
-    \\
-    \caption{Binary Breakdown of the second ID}\label{fig:breakdown_2}
+	\large{\texttt{\color{cyan}11000011100101110110011101010010000010110
+			\color{red}00001 \color{green}00000
+			\color{gray}000000000001}}
+	\\
+	\caption{Binary Breakdown of the second Id}\label{fig:breakdown_2}
 \end{figure}
 
 \begin{figure}[H]
-    \large{\texttt{\color{cyan}11000011100101110110011101010101111100110
-            \color{red}00001 \color{green}00000 \color{gray}000000000010}}
-    \\
-    \caption{Binary Breakdown of the third ID}\label{fig:breakdown_3}
+	\large{\texttt{\color{cyan}11000011100101110110011101010101111100110
+			\color{red}00001 \color{green}00000
+			\color{gray}000000000010}}
+	\\
+	\caption{Binary Breakdown of the third Id}\label{fig:breakdown_3}
 \end{figure}
 
 \hn{}
-As you can see, all ID's were generated on worker one and process zero (red and
+As you can see, all Id's were generated on worker one and process zero (red and
 green fields). \\
 \hn{}
 Also, the increment field properly incremented from one, to two, to three.
@@ -372,13 +396,13 @@ Also, the increment field properly incremented from one, to two, to three.
 Now, let's look at the timestamps (non-custom epoch):
 
 \begin{figure}[H]
-    \begin{lcverbatim}
-        1680117507093
-        1680117507094
-        1680117509094
-    \end{lcverbatim}
-    \caption{The timestamps of the three Snowflake ID's that were
-        generated}\label{fig:breakdown_timestamps}
+	\begin{lcverbatim}
+	1680117507093
+	1680117507094
+	1680117509094
+	\end{lcverbatim}
+	\caption{The timestamps of the three Snowflake Id's that were
+		generated}\label{fig:breakdown_timestamps}
 \end{figure}
 As you can see, on the first two generations the timestamp only changed by
 \code{1 ms} which is pure machine latency.
@@ -390,7 +414,8 @@ compile to a Snowflake.
 
 \break{}
 
-\section{2038 Problem}
+\section{The 2038 Problem}
+\label{year_3038_problem}
 The 2038 problem, also known as the Unix Y2K bug, refers to a limitation of the
 Unix timestamp, which is used to represent time as a 32-bit signed integer, and
 is set to overflow on \code{January 19, 2038}. This means that any software
@@ -400,55 +425,54 @@ encounter errors or fail completely. \\
 As we already know, a Snowflake is a 64-bit integer and a part of it consists
 of a constantly growing UNIX Timestamp. Since the Snowflake is in fact able to
 hold a 42-bits instead of just 32, the problem gets put off to \code{May 15,
-    2109} but, is still present. \\
+	2109} but, is still present. \\
 \hn{}
 One approach, is to use custom epochs which postpone the problem for a time. A
 good choice for a custom epoch is a time before you started utilising Snowflake
-ID's, since Snowflake ID's usually never require to have a timestamp that goes
+Id's, since Snowflake Id's usually never require to have a timestamp that goes
 back before the implementation time. \\
 Of course, this is not the case if you already have and plan to migrate from an
-old ID System, and want to convert ID's. \\
+old Id System, and want to convert Id's. \\
 \hn{}
 After all, those approaches only delay the problem, so its always good to have
 it back in mind.
 
 \section{Constraints}
 
-\subsection{Timestamp}
+\subsection{Timestamp Field}
 The timestamp is a 42-bit integer, which means that it can hold a value from
 \code{0} to \code{4398046511103} (or $2^{42} - 1$).
 
-\subsection{Worker ID and Process ID}
-The worker ID and process ID are both 5-bit integers, which means that they
+\subsection{Worker Id and Process Id Field}
+The worker Id and process Id are both 5-bit integers, which means that they
 can hold a value from \code{0} to \code{31}. \\
 \hn{}
-The worker ID is used to identify the machine that generated the ID, while the
-process ID is used to identify the process or thread that generated the ID.\@
+The worker Id is used to identify the machine that generated the Id, while the
+process Id is used to identify the process or thread that generated the Id.\@
 
-\subsection{Increment}
+\subsection{Increment Field}
 The increment is a 12-bit integer, which means that it can hold a value from
 \code{0} to \code{4095}.
 
-\subsection{Snowflake ID}
+\subsection{Snowflake Id}
 \label{snowflake_id_constraints}
-The Snowflake ID is a 64-bit integer, which means that it can hold a value from
+The Snowflake Id is a 64-bit integer, which means that it can hold a value from
 \code{0} to \code{18446744073709551615} (or $2^{64} - 1$).
 
 \section{Sources}
 \begin{small}
-    \begin{itemize}
-        \item \url{https://en.wikipedia.org/wiki/Identifier}
-        \item \url{https://en.wikipedia.org/wiki/MySQL}
-        \item \url{https://en.wikipedia.org/wiki/Apache_Cassandra}
-        \item \url{https://en.wikipedia.org/wiki/Discord}
-        \item \url{https://en.wikipedia.org/wiki/Network_Time_Protocol}
-        \item \url{https://en.wikipedia.org/wiki/Unix_time}
-        \item \url{https://en.wikipedia.org/wiki/2038_problem}
-        \item \url{https://discord.com/developers/docs/reference#snowflakes}
-        \item
+	\begin{itemize}
+		\item
 
-              \url{https://github.com/twitter-archive/snowflake/tree/snowflake-2010#readme}
-    \end{itemize}
+		      \url{https://github.com/twitter-archive/snowflake/tree/snowflake-2010#readme}
+		\item \url{https://en.wikipedia.org/wiki/Identifier}
+		\item \url{https://en.wikipedia.org/wiki/MySQL}
+		\item \url{https://en.wikipedia.org/wiki/Apache_Cassandra}
+		\item \url{https://en.wikipedia.org/wiki/Discord}
+		\item \url{https://en.wikipedia.org/wiki/Network_Time_Protocol}
+		\item \url{https://en.wikipedia.org/wiki/Unix_time}
+		\item \url{https://en.wikipedia.org/wiki/2038_problem}
+	\end{itemize}
 \end{small}
 
 \end{document}
