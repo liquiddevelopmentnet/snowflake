@@ -171,7 +171,7 @@ contains the UNIX Timestamp\footnote{Unix time is a date and time
 like to
 use
 custom epochs to lower the timestamp at the beginning of use, and postpone the
-`Year-3038' problem. Usually the first day of January in a Year is taken, (see \nameref{year_3038_problem}).
+`Year-2038' problem. Usually the first day of January in a Year is taken, (see \nameref{year_2038_problem}).
 
 \begin{figure}[H]
 	\begin{lcverbatim}
@@ -415,7 +415,7 @@ compile to a Snowflake.
 \break{}
 
 \section{The 2038 Problem}
-\label{year_3038_problem}
+\label{year_2038_problem}
 The 2038 problem, also known as the Unix Y2K bug, refers to a limitation of the
 Unix timestamp, which is used to represent time as a 32-bit signed integer, and
 is set to overflow on \code{January 19, 2038}. This means that any software
