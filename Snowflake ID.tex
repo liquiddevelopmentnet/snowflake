@@ -311,11 +311,17 @@ function look like this:
 
 \begin{figure}[H]
 	\begin{lcverbatim}
-	long snowflake(int workerId, int processId) {
+	static long increment_mask = -1 ^ (-1 << 12);
+
+	unsigned long snowflake(int workerId, int processId)
+	{
 		long timestamp = unix_time();
+	
 		static int increment = -1;
 		increment++;
-
+		increment = increment & increment_mask;
+		// Mask to 12 bits to prevent overflow
+	
 		return (timestamp << 22)
 			| (workerId << 17)
 			| (processId << 12)
